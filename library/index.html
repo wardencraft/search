@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1 id="h1">Biblioteca</h1>
+    <div class="container">
+        <ul id="library">
+            
+        </ul>
+    </div>
+
+    <script>
+        const library = document.getElementById("library");
+
+        let books = {};
+        async function read_books() {
+            const res = await fetch("books.json");
+            books = await res.json();
+            books.forEach(book => {
+            library.innerHTML += `<li><a href="books/${book.url}" class="book">${book.name}</a></li>`
+        });
+        }
+        read_books();
+
+        window.addEventListener("keydown", (e) => {
+            if(e.ctrlKey && e.key==="z"){
+                e.preventDefault();
+                window.location.href = "../"
+            }
+        })
+    </script>
+</body>
+</html>

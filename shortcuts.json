@@ -58,5 +58,10 @@
         "type":"url",
         "value":"https://drive.google.com/",
         "description":"Google Drive"
+    },
+    "library": {
+        "type":"url",
+        "value":"/library",
+        "description": "Private Library"
     }
 }

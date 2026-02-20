@@ -1,0 +1,56 @@
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background-size: 200% 200%;
+    background: linear-gradient(45deg, #000000, #141414, #000000);
+    color: #ffffff;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+#h1 {
+    font-size: 64px;
+}
+
+.container {
+    align-items: center;
+    overflow: hidden;
+}
+
+#library {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(30, 30, 30, 0.3);
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    gap: 20px;
+    height: 50vh;
+    padding: 30px 100px 30px 20px;
+    overflow-y: auto;
+}
+
+#library::-webkit-scrollbar {
+    width: 8px;
+    background-color: #121212;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#library::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 6px;
+}
+
+#library li {
+    list-style: none;
+    padding: 10px 50px 10px 20px;
+}
+
+.book {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: x-large;
+}

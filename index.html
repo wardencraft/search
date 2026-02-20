@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
 </head>
 <body>
     <main>
@@ -16,21 +16,33 @@
             <h1>NEXUS</h1>
         </section>
         <section class="container">
-            <div id="engine-input">G</div>
-            <input type="text" placeholder="Search the web..." id="input" autocomplete="off">
-            <div id="select"><p id="selector"></p></div>
+            <div id="engine"></div>
+            <input type="text" placeholder=">_" id="input" autocomplete="off">
         </section>
         <section id="output">a</section>
     </main>
     <script>
         const input = document.getElementById("input");
-        const selector = document.getElementById("selector");
-        const select = document.getElementById("select");
+        const engine_html = document.getElementById("engine")
         const output = document.getElementById("output");
 
-        const shortcuts = {
-            'ls': {
-                action: () => {
+        
+
+        let shortcuts = {};
+        async function loadShortcuts() {
+            const res = await fetch("shortcuts.json");
+            shortcuts = await res.json();
+        }
+        loadShortcuts();
+
+
+
+        function showOutput() {
+            output.style.display = "block";
+        }
+
+        const scripts = {
+            'ls':  () => {
                     showOutput();
                     let html = "Comandos Disponiveis:<br><br>";
                     for(let cmd in shortcuts) {
@@ -39,97 +51,47 @@
                     output.innerHTML = html;
                     input.value = '';
                 },
-                description: "Listar comandos",
-            },
-            'cls': {
-                action: () => {
-                    output.style.display = "none";
-                    input.value = '';
-                },
-                description: "Limpar tela"
-            },
-            'sig': {
-                action: () => {
-                    window.location.href = "https://sig.ifc.edu.br/sigaa"
-                },
-                description: "SIGAA"
-            },
-            'chat': {
-                action: () => {
-                    window.location.href = "https://chatgpt.com"
-                },
-                description: "ChatGPT"
-            },
-            'y': {
-                action: () => {
-                    window.location.href = "https://youtube.com"
-                },
-                description: "Youtube"
-            },
-            'gdb': {
-                action: () => {
-                    window.location.href = "https://onlinegdb.com"
-                },
-                description: "OnlineGDB"
-            },
-            'git': {
-                action: () => {
-                    window.location.href = "https://github.com"
-                },
-                description: "GitHub"
-            },
-            'gmail': {
-                action: () => {
-                    window.location.href = "https://mail.google.com/"
-                },
-                description: "Google Gmail"
-            },
-            't': {
-                action: () => {
-                    window.location.href = "https://translate.google.com"
-                },
-                description: "Google Translate"
+            'cls': () => {
+                output.style.display = "none";
+                input.value = "";
             }
         }
 
-        function showOutput() {
-            output.style.display = "block";
-        }
-
         search_tool = (text, link) => {
-            if(shortcuts[text]) {
-                shortcuts[text].action();
+            const short = shortcuts[text];
+            if(short){
+                if(short.type==="url") {
+                window.location.href = short.value;
+            } else if(short.type==="script") {
+                scripts[text]();
+            }
             } else if(text.includes('https://') || text.includes('http://')) {
                 window.location.href = text;
             } else if(text.includes('.') && !text.includes(' ')) {
                 window.location.href = `https://${text}`
             } else {
-                window.location.href = (`${link}${encodeURIComponent(text)}`);// <!--XD-->
+                window.location.href = (`${link}${encodeURIComponent(text)}`);
             }
         }
 
         engine = (number) => {
-            select.classList.remove('google', 'youtube', 'chat');
+            engine_html.classList.remove('google', 'youtube', 'chat');
             if(number==1) {
-                selector.innerHTML = "Google";
+                engine_html.innerHTML = "<img src='icons/google.svg' id='engine-icon'>";
                 link = 'https://www.google.com/search?q=';
-                select.classList.add('google');
+                engine_html.classList.add('google');
             } else if(number==2) {
-                selector.innerHTML = "Youtube";
+                engine_html.innerHTML = "<img src='icons/youtube.svg' id='engine-icon'>";
                 link = 'https://www.youtube.com/results?search_query=';
-                select.classList.add('youtube');
+                engine_html.classList.add('youtube');
             } else if(number==3) {
-                selector.innerHTML = "ChatGPT";
+                engine_html.innerHTML = "<img src='icons/chatgpt.svg' id='engine-icon'>";
                 link = 'https://chat.openai.com/?q='
-                select.classList.add('chat');
+                engine_html.classList.add('chat');
             }
         }
 
         engine(1);
-
-        selector.addEventListener("click", () => {
-            showOutput()
-        })
 
         input.focus();
         input.addEventListener("keydown", (e) => {

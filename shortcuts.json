@@ -1,0 +1,62 @@
+{
+    "ls": {
+        "type":"script",
+        "value":"",
+        "description":"Listar Comandos"
+    },
+    "cls": {
+        "type":"script",
+        "value":"",
+        "description":"Limpar Tela"
+    },
+    "git": {
+        "type":"url",
+        "value":"https://github.com",
+        "description":"GitHub"
+    },
+    "y": {
+        "type":"url",
+        "value":"https://youtube.com",
+        "description":"Youtube"
+    },
+    "sig": {
+        "type":"url",
+        "value":"https://sig.ifc.edu.br/",
+        "description":"Sigaa"
+    },
+    "chat": {
+        "type":"url",
+        "value":"https://chatgpt.com",
+        "description":"ChatGPT"
+    },
+    "gdb": {
+        "type":"url",
+        "value":"https://onlinegdb.com",
+        "description":"OnlineGDB"
+    },
+    "gmail": {
+        "type":"url",
+        "value":"https://mail.google.com/",
+        "description":"Google Gmail"
+    },
+    "telegram": {
+        "type":"url",
+        "value":"https://web.telegram.org/",
+        "description":"Telegram"
+    },
+    "t": {
+        "type":"url",
+        "value":"https://translate.google.com",
+        "description":"Google Translate"
+    },
+    "canva": {
+        "type":"url",
+        "value":"https://canva.com",
+        "description":"Canva"
+    },
+    "drive": {
+        "type":"url",
+        "value":"https://drive.google.com/",
+        "description":"Google Drive"
+    }
+}

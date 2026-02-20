@@ -1,0 +1,2 @@
+SVG De Empresas
+https://www.svgrepo.com/collection/social-and-company-colored-logo-icons/

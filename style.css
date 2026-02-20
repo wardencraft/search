@@ -1,7 +1,9 @@
 body {
     color: #ffffff;
     font-family: Arial, Helvetica, sans-serif;
-    background: linear-gradient(45deg,rgba(0, 0, 0, 1) 0%, rgb(20, 20, 20) 50%, rgba(0, 0, 0, 1) 100%);
+    background: linear-gradient(45deg,#000000, #141414, #000000);
+    background-size: 200% 200%;
+    animation: backgroundAnimation 30s ease infinite;
     margin: 0;
     padding: 0;
     display: flex;
@@ -12,6 +14,19 @@ body {
     height: 100vh;
     gap: 50px;
     overflow: hidden;
+    user-select: none;
+}
+
+@keyframes backgroundAnimation {
+   0% {
+      background-position: 0% 50%;
+   }
+   50% {
+      background-position: 100% 50%;
+   }
+   100% {
+      background-position: 0% 50%;
+   }
 }
 
 main {
@@ -28,6 +43,7 @@ h1 {
 }
 
 .container {
+   position: relative;
    display: flex;
    gap: 15px;
    align-items: center;
@@ -35,27 +51,26 @@ h1 {
 }
 
 #input {
-    background-color: #1a1a1a;
-    color: #ffffff;
-    padding: 20px 50px 20px 25px;
-    border: 1px solid #2a2a2a;
-    border-radius: 16px;
-    min-width: 550px;
-    font-size: 18px;
-    transition: all 0.2s ease;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-
+   background-color: rgba(26,26,26,0.5);
+   color: #ffffff;
+   padding: 20px 50px 20px 75px;
+   border: 1px solid #2a2a2a;
+   border-radius: 16px;
+   min-width: 550px;
+   font-size: 18px;
+   transition: all 0.2s ease;
+   box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
 #input:hover {
-   background-color: #1e1e1e;
+   background-color: rgba(30,30,30,0.5);
    border: 1px solid #2e2e2e;
 }
 
 #input:focus {
    outline: none;
    border: 1px solid #444;
-   background-color: #202020;
+   background-color: rgba(32,32,32,0.5);
    box-shadow: 0 0 0 4px rgba(255,255,255,0.03);
 }
 
@@ -64,20 +79,25 @@ h1 {
     user-select: none;
 }
 
-#engine-input {
-   background-color: #4285F4;
+#engine {
+   background: none;
+   max-width: 15px;
+   width: 15px;
+   padding: 10px 18px;
+   position: absolute;
+   left: 8px;
+   pointer-events: none;
+   border-radius: 10px;
+   opacity: 0.7;
+   transition: all 0.3s ease;
+
+   display: flex;
+   justify-content: center;
 }
 
-#select {
-    background-color: #222222;
-    padding: 0 20px 0 20px;
-    min-height: 100%;
-    border-radius: 15px;
-    min-width: 100px;
-    text-align: center;
-    align-content: center;
-    transition: all 0.3s ease;
-    opacity: 0.8;
+#engine-icon {
+   width: 30px;
+   height: 30px;
 }
 
 #output {
@@ -88,6 +108,6 @@ h1 {
    background-color: #222222;
 }
 
-#select.google  { background-color: #4285F4; }
-#select.youtube { background-color: #FF0000; }
-#select.chat    { background-color: #10A37F; }
+#engine.google  { background-color: #4285F4; }
+#engine.youtube { background-color: #FF0000; }
+#engine.chat    { background-color: #10A37F; }

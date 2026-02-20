@@ -61,6 +61,7 @@
         //Redirecionamento de páginas / funções via input
         search_tool = (text, link) => {
             const short = shortcuts[text];
+            input.value = "";
             if(short){
                 if(short.type==="url") {
                 window.location.href = short.value;

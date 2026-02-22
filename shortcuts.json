@@ -68,5 +68,11 @@
         "type": "url",
         "value":"https://notebooklm.google/",
         "description": "Google LM Notebook"
+    },
+    "grok": {
+        "type": "url",
+        "value":"https://grok.com",
+        "description": "Grok AI"
     }
+
 }

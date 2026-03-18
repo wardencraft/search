@@ -73,6 +73,11 @@
         "type": "url",
         "value":"https://grok.com",
         "description": "Grok AI"
+    },
+    "bubble": {
+        "type": "url",
+        "value":"https://bubble.io/home",
+        "description": "Bubble IO"
     }
 
 }

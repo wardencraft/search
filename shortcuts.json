@@ -78,6 +78,10 @@
         "type": "url",
         "value":"https://bubble.io/home",
         "description": "Bubble IO"
+    },
+    "perplexity": {
+        "type": "url",
+        "value": "https://www.perplexity.ai/",
+        "description": "Perplexity AI"
     }
-
 }

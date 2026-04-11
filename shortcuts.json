@@ -69,6 +69,11 @@
         "value":"https://notebooklm.google/",
         "description": "Google LM Notebook"
     },
+    "whats": {
+        "type": "url",
+        "value": "https://web.whatsapp.com",
+        "description": "Whatsapp Web"
+    },
     "grok": {
         "type": "url",
         "value":"https://grok.com",

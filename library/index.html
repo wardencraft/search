@@ -1,37 +1,63 @@
 <!DOCTYPE html>
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Downloads Automáticos</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        ul { list-style-type: none; padding: 0; }
+        li { margin: 10px 0; }
+        a { color: #0066cc; text-decoration: none; font-size: 18px; }
+        a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
-    <h1 id="h1">Biblioteca</h1>
-    <div class="container">
-        <ul id="library">
-            
-        </ul>
-    </div>
+
+    <h1>Arquivos Disponíveis</h1>
+    <ul id="lista-arquivos">Carregando arquivos...</ul>
 
     <script>
-        const library = document.getElementById("library");
+        // CONFIGURAÇÃO: Altere com seus dados do GitHub
+        const USERNAME = 'wardencraft';
+        const REPO = 'search';
+        const PATH = 'library/books'; // Nome da pasta onde estão os arquivos
 
-        let books = {};
-        async function read_books() {
-            const res = await fetch("books.json");
-            books = await res.json();
-            books.forEach(book => {
-            library.innerHTML += `<li><a href="books/${book.url}" class="book">${book.name}</a></li>`
-        });
-        }
-        read_books();
+        const url = `https://api.github.com/repos/${USERNAME}/${REPO}/contents/${PATH}`;
 
-        window.addEventListener("keydown", (e) => {
-            if(e.ctrlKey && e.key==="z"){
-                e.preventDefault();
-                window.location.href = "../"
+        async function buscarArquivos() {
+            try {
+                const response = await fetch(url);
+                const arquivos = await response.json();
+                const listaUls = document.getElementById('lista-arquivos');
+                listaUls.innerHTML = ''; // Limpa o "Carregando..."
+
+                if (!Array.isArray(arquivos)) {
+                    listaUls.innerHTML = '<li>Nenhum arquivo encontrado ou erro na configuração.</li>';
+                    return;
+                }
+
+                arquivos.forEach(arquivo => {
+                    // Ignora subpastas, foca apenas em arquivos
+                    if (arquivo.type === 'file') {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        
+                        // download_url é o link direto para baixar o arquivo bruto
+                        a.href = arquivo.download_url; 
+                        a.textContent = arquivo.name;
+                        a.setAttribute('download', ''); 
+                        
+                        li.appendChild(a);
+                        listaUls.appendChild(li);
+                    }
+                });
+            } catch (erro) {
+                console.error('Erro ao buscar arquivos:', erro);
+                document.getElementById('lista-arquivos').innerHTML = '<li>Erro ao carregar arquivos.</li>';
             }
-        })
+        }
+
+        buscarArquivos();
     </script>
 </body>
 </html>

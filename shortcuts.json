@@ -60,8 +60,8 @@
         "description":"Google Drive"
     },
     "library": {
-        "type":"url",
-        "value":"/library",
+        "type":"script",
+        "value":"",
         "description": "Private Library"
     },
     "lm": {

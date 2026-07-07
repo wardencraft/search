@@ -7,8 +7,97 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+    <style>
+        /* ===== search-main/style.css ===== */
+        body {
+            color: #ffffff;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(45deg,#000000, #141414, #000000);
+            background-size: 200% 200%;
+            animation: backgroundAnimation 30s ease infinite;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            align-content: center;
+            height: 100vh;
+            gap: 50px;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        @keyframes backgroundAnimation {
+           0% { background-position: 0% 50%; }
+           50% { background-position: 100% 50%; }
+           100% { background-position: 0% 50%; }
+        }
+
+        main { display: flex; flex-direction: column; gap: 50px; align-items: center; }
+
+        h1 { font-size: 72px; font-weight: 500px; line-height: 0; }
+
+        .container { position: relative; display: flex; gap: 15px; align-items: center; justify-content: center; }
+
+        #input {
+           background-color: rgba(26,26,26,0.5);
+           color: #ffffff;
+           padding: 20px 50px 20px 75px;
+           border: 1px solid #2a2a2a;
+           border-radius: 16px;
+           min-width: 550px;
+           font-size: 18px;
+           transition: all 0.2s ease;
+           box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        #input:hover { background-color: rgba(30,30,30,0.5); border: 1px solid #2e2e2e; }
+        #input:focus { outline: none; border: 1px solid #444; background-color: rgba(32,32,32,0.5); box-shadow: 0 0 0 4px rgba(255,255,255,0.03); }
+        #input::placeholder { color: #ffffff; user-select: none; }
+
+        #engine { background: none; max-width: 15px; width: 15px; padding: 10px 18px; position: absolute; left: 8px; pointer-events: none; border-radius: 10px; opacity: 0.7; transition: all 0.3s ease; display: flex; justify-content: center; }
+        #engine-icon { width: 30px; height: 30px; }
+
+        #output { display: none; padding: 20px; border-radius: 20px; width: 300px; background-color: #222222; }
+
+        #engine.google  { background-color: #4285F4; }
+        #engine.youtube { background-color: #FF0000; }
+        #engine.chat    { background-color: #10A37F; }
+
+        /* ===== file-list / library window styles ===== */
+        /* Inline styles for file list window */
+        #output { display: none; padding: 12px; max-height: 50vh; overflow: auto; }
+        #output h2 { margin: 0 0 8px 0; }
+        #file-list { list-style: none; padding: 0; margin: 0; }
+        #file-list li { padding: 6px 8px; border-radius: 4px; cursor: pointer; }
+        #file-list li.selected { background: #e9eef8; }
+        #file-list a { color: inherit; text-decoration: none; display: block; }
+
+        /* ===== library/style.css (merged) ===== */
+        body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; background-size: 200% 200%; background: linear-gradient(45deg, #000000, #141414, #000000); color: #ffffff; align-items: center; justify-content: center; user-select: none; }
+
+        #h1 { font-size: 64px; }
+
+        .container { align-items: center; overflow: hidden; }
+
+        #library { display: flex; flex-direction: column; background-color: rgba(30, 30, 30, 0.3); border-radius: 10px; border: 1px solid #ccc; gap: 20px; height: 50vh; padding: 30px 100px 30px 20px; overflow-y: auto; }
+
+        #library::-webkit-scrollbar { width: 8px; background-color: #121212; border: 1px solid #ccc; border-radius: 5px; }
+        #library::-webkit-scrollbar-thumb { background-color: #888; border-radius: 6px; }
+
+        #library li { list-style: none; padding: 10px 50px 10px 20px; }
+
+        .book { color: #ffffff; text-decoration: none; font-size: x-large; }
+
+        /* ===== small inline styles from library/index.html ===== */
+        /* (kept for compatibility with library list rendering) */
+        ul { list-style-type: none; padding: 0; }
+        li { margin: 10px 0; }
+        a { color: #0066cc; text-decoration: none; font-size: 18px; }
+        a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
     <main>
@@ -41,6 +130,99 @@
             output.style.display = "block";
         }
 
+        // CONFIGURAÇÃO: Altere com seus dados do GitHub se necessário
+        const GH_USERNAME = 'wardencraft';
+        const GH_REPO = 'search';
+        const GH_PATH = 'library/books';
+
+        async function showFiles() {
+            showOutput();
+            output.innerHTML = "<h2>Arquivos Disponíveis</h2><ul id='file-list'><li>Carregando arquivos...</li></ul>";
+
+            const url = `https://api.github.com/repos/${GH_USERNAME}/${GH_REPO}/contents/${GH_PATH}`;
+            try {
+                const res = await fetch(url);
+                const arquivos = await res.json();
+                const ul = document.getElementById('file-list');
+                ul.innerHTML = '';
+
+                if (!Array.isArray(arquivos)) {
+                    ul.innerHTML = '<li>Nenhum arquivo encontrado ou erro na configuração.</li>';
+                    return;
+                }
+
+                arquivos.forEach(arquivo => {
+                    if (arquivo.type === 'file') {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        a.href = arquivo.download_url;
+                        a.textContent = arquivo.name;
+                        a.setAttribute('download', '');
+                        li.appendChild(a);
+                        ul.appendChild(li);
+                    }
+                });
+
+                // keyboard navigation state
+                let selectedIndex = 0;
+                const items = () => Array.from(document.querySelectorAll('#file-list li'));
+
+                function updateSelection() {
+                    items().forEach((li, idx) => {
+                        li.classList.toggle('selected', idx === selectedIndex);
+                        if (idx === selectedIndex) li.scrollIntoView({ block: 'nearest' });
+                    });
+                }
+
+                // initial selection
+                if (items().length > 0) updateSelection();
+
+                // click to select + double click to download/open
+                document.querySelectorAll('#file-list li').forEach((li, idx) => {
+                    li.addEventListener('click', () => {
+                        selectedIndex = idx;
+                        updateSelection();
+                    });
+                    li.addEventListener('dblclick', () => {
+                        const a = li.querySelector('a');
+                        if (a) a.click();
+                    });
+                });
+
+                // global key handler for navigation when file list is visible
+                function filesKeyHandler(e) {
+                    const ulEl = document.getElementById('file-list');
+                    if (!ulEl || output.style.display === 'none') return;
+
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        const len = items().length;
+                        selectedIndex = (selectedIndex + 1) % len;
+                        updateSelection();
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        const len = items().length;
+                        selectedIndex = (selectedIndex - 1 + len) % len;
+                        updateSelection();
+                    } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const a = items()[selectedIndex]?.querySelector('a');
+                        if (a) a.click();
+                    } else if (e.key === 'Escape') {
+                        // hide window on Escape
+                        output.style.display = 'none';
+                    }
+                }
+
+                // add listener and keep a small reference to remove later if needed
+                window.addEventListener('keydown', filesKeyHandler);
+
+            } catch (err) {
+                console.error('Erro ao buscar arquivos:', err);
+                document.getElementById('file-list').innerHTML = '<li>Erro ao carregar arquivos.</li>';
+            }
+        }
+
         //Funções para rodar via shortcuts
         const scripts = {
             'ls':  () => {
@@ -56,6 +238,7 @@
                 output.style.display = "none";
                 input.value = "";
             }
+            , 'library': () => { showFiles(); }
         }
 
         //Redirecionamento de páginas / funções via input

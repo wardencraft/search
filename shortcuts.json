@@ -39,6 +39,11 @@
         "value":"https://mail.google.com/",
         "description":"Google Gmail"
     },
+    "gemini": {
+        "type":"url",
+        "value":"https://gemini.google.com/",
+        "description":"Gemini"
+    },
     "telegram": {
         "type":"url",
         "value":"https://web.telegram.org/",
@@ -69,7 +74,7 @@
         "value":"https://notebooklm.google/",
         "description": "Google LM Notebook"
     },
-    "whats": {
+    "w": {
         "type": "url",
         "value": "https://web.whatsapp.com",
         "description": "Whatsapp Web"
@@ -84,9 +89,19 @@
         "value":"https://bubble.io/home",
         "description": "Bubble IO"
     },
-    "perplexity": {
+    "per": {
         "type": "url",
         "value": "https://www.perplexity.ai/",
         "description": "Perplexity AI"
+    },
+    "dc": {
+        "type": "url",
+        "value": "https://discord.com/app",
+        "description": "Discord"
+    },
+    "un": {
+        "type": "url",
+        "value": "https://aluno.universonarrado.com.br",
+        "description": "Universo Narrado"
     }
 }

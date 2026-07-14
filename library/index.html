@@ -1,63 +1,280 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Downloads Automáticos</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        ul { list-style-type: none; padding: 0; }
-        li { margin: 10px 0; }
-        a { color: #0066cc; text-decoration: none; font-size: 18px; }
-        a:hover { text-decoration: underline; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Private Library</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#111827;
+    color:#f3f4f6;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    min-height:100vh;
+    padding:40px 20px;
+}
+
+.container{
+    width:100%;
+    max-width:700px;
+    background:#1f2937;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+}
+
+h1{
+    margin-bottom:20px;
+    text-align:center;
+}
+
+#pesquisa{
+    width:100%;
+    padding:12px 15px;
+    border:none;
+    border-radius:8px;
+    outline:none;
+    background:#374151;
+    color:white;
+    font-size:16px;
+    margin-bottom:20px;
+}
+
+#pesquisa::placeholder{
+    color:#9ca3af;
+}
+
+/* Firefox */
+#lista-arquivos{
+    scrollbar-width: thin;
+    scrollbar-color: #4b5563 transparent;
+    padding: 5px 12px 0px 12px;
+}
+
+/* Chrome, Edge e Safari */
+#lista-arquivos::-webkit-scrollbar{
+    width:8px;
+}
+
+#lista-arquivos::-webkit-scrollbar-track{
+    background:transparent;
+}
+
+#lista-arquivos::-webkit-scrollbar-thumb{
+    background:#4b5563;
+    border-radius:999px;
+}
+
+#lista-arquivos::-webkit-scrollbar-thumb:hover{
+    background:#6b7280;
+}
+
+#lista-arquivos{
+    list-style:none;
+    max-height:70vh;
+    overflow-y:auto;
+    overflow-x:hidden;
+    margin-top:15px;
+}
+
+#lista-arquivos li{
+    margin-bottom:10px;
+}
+
+#lista-arquivos a{
+    display:block;
+    padding:12px 15px;
+    background:#374151;
+    color:#fff;
+    text-decoration:none;
+    border-radius:8px;
+    transition:.2s;
+}
+
+#lista-arquivos a.selecionado{
+    background:#2563eb;
+    outline:2px solid #60a5fa;
+}
+
+#lista-arquivos a:hover{
+    background:#2563eb;
+    transform:translateX(5px);
+}
+</style>
 </head>
 <body>
 
-    <h1>Arquivos Disponíveis</h1>
-    <ul id="lista-arquivos">Carregando arquivos...</ul>
+<div class="container">
+    <h1>Biblioteca</h1>
 
-    <script>
-        // CONFIGURAÇÃO: Altere com seus dados do GitHub
-        const USERNAME = 'wardencraft';
-        const REPO = 'search';
-        const PATH = 'library/books'; // Nome da pasta onde estão os arquivos
+    <input
+        type="text"
+        id="pesquisa"
+        placeholder="Pesquisar arquivo..."
+    >
 
-        const url = `https://api.github.com/repos/${USERNAME}/${REPO}/contents/${PATH}`;
+    <ul id="lista-arquivos">
+        <li>Carregando...</li>
+    </ul>
+</div>
 
-        async function buscarArquivos() {
-            try {
-                const response = await fetch(url);
-                const arquivos = await response.json();
-                const listaUls = document.getElementById('lista-arquivos');
-                listaUls.innerHTML = ''; // Limpa o "Carregando..."
+<script>
+/*const senha = prompt("Digite a senha:");
 
-                if (!Array.isArray(arquivos)) {
-                    listaUls.innerHTML = '<li>Nenhum arquivo encontrado ou erro na configuração.</li>';
-                    return;
-                }
+if (senha !== "123") {
+    alert("Acesso negado.");
+    window.location.href = "../";
+}*/
 
-                arquivos.forEach(arquivo => {
-                    // Ignora subpastas, foca apenas em arquivos
-                    if (arquivo.type === 'file') {
-                        const li = document.createElement('li');
-                        const a = document.createElement('a');
-                        
-                        // download_url é o link direto para baixar o arquivo bruto
-                        a.href = arquivo.download_url; 
-                        a.textContent = arquivo.name;
-                        a.setAttribute('download', ''); 
-                        
-                        li.appendChild(a);
-                        listaUls.appendChild(li);
-                    }
-                });
-            } catch (erro) {
-                console.error('Erro ao buscar arquivos:', erro);
-                document.getElementById('lista-arquivos').innerHTML = '<li>Erro ao carregar arquivos.</li>';
-            }
+const USERNAME = 'wardencraft';
+const REPO = 'search';
+const PATH = 'library/books';
+
+const url = `https://api.github.com/repos/${USERNAME}/${REPO}/contents/${PATH}`;
+
+let listaArquivos = [];
+let indiceSelecionado = -1;
+let arquivosFiltrados = [];
+
+async function buscarArquivos() {
+    try {
+        const response = await fetch(url);
+        const arquivos = await response.json();
+
+        if (!Array.isArray(arquivos)) {
+            document.getElementById('lista-arquivos').innerHTML =
+                '<li>Nenhum arquivo encontrado.</li>';
+            return;
         }
 
-        buscarArquivos();
-    </script>
+        listaArquivos = arquivos.filter(arquivo => arquivo.type === 'file');
+
+        renderizarArquivos(listaArquivos);
+
+    } catch (erro) {
+        console.error(erro);
+        document.getElementById('lista-arquivos').innerHTML =
+            '<li>Erro ao carregar arquivos.</li>';
+    }
+}
+
+function renderizarArquivos(arquivos) {
+    const lista = document.getElementById('lista-arquivos');
+    lista.innerHTML = '';
+
+    arquivosFiltrados = arquivos;
+
+    if (arquivos.length === 0) {
+        lista.innerHTML = '<li>Nenhum arquivo encontrado.</li>';
+        indiceSelecionado = -1;
+        return;
+    }
+
+    arquivos.forEach(arquivo => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+
+        a.href = arquivo.download_url;
+        a.textContent = arquivo.name;
+        a.setAttribute('download', '');
+
+        li.appendChild(a);
+        lista.appendChild(li);
+    });
+
+    indiceSelecionado = 0;
+    atualizarSelecao();
+}
+
+function atualizarSelecao() {
+    const links = document.querySelectorAll("#lista-arquivos a");
+
+    links.forEach(link => link.classList.remove("selecionado"));
+
+    if (indiceSelecionado >= 0 && indiceSelecionado < links.length) {
+        links[indiceSelecionado].classList.add("selecionado");
+        links[indiceSelecionado].scrollIntoView({
+            block: "nearest",
+            behavior: "smooth"
+        });
+    }
+}
+
+function normalizar(str) {
+    return str
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+}
+
+const pesquisa = document.getElementById("pesquisa");
+
+pesquisa.addEventListener('input', function () {
+    const texto = normalizar(this.value);
+
+    const filtrados = listaArquivos.filter(arquivo =>
+        normalizar(arquivo.name).includes(texto)
+    );
+
+    renderizarArquivos(filtrados);
+});
+
+document.addEventListener("keydown", (e) => {
+
+    // Ctrl + Space
+    if (e.ctrlKey && e.code === "Space") {
+        e.preventDefault();
+        pesquisa.focus();
+        pesquisa.select();
+        return;
+    }
+
+    // Não captura as setas enquanto digita
+    if (document.activeElement === pesquisa)
+        return;
+
+    // ↓
+    if (e.key === "ArrowDown") {
+        e.preventDefault();
+
+        if (indiceSelecionado < arquivosFiltrados.length - 1) {
+            indiceSelecionado++;
+            atualizarSelecao();
+        }
+    }
+
+    // ↑
+    if (e.key === "ArrowUp") {
+        e.preventDefault();
+
+        if (indiceSelecionado > 0) {
+            indiceSelecionado--;
+            atualizarSelecao();
+        }
+    }
+
+    // Enter
+    if (e.key === "Enter" && indiceSelecionado >= 0) {
+        e.preventDefault();
+
+        window.open(
+            arquivosFiltrados[indiceSelecionado].download_url,
+            "_blank"
+        );
+    }
+});
+
+buscarArquivos();
+</script>
+
 </body>
 </html>

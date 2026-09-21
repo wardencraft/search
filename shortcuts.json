@@ -1,14 +1,4 @@
 {
-    "ls": {
-        "type":"script",
-        "value":"",
-        "description":"Listar Comandos"
-    },
-    "cls": {
-        "type":"script",
-        "value":"",
-        "description":"Limpar Tela"
-    },
     "git": {
         "type":"url",
         "value":"https://github.com",
